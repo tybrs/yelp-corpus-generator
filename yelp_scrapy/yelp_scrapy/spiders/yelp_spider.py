@@ -2,7 +2,7 @@ from scrapy import Spider, Request
 from yelp_scrapy.items import YelpItem
 from re import findall
 from time import sleep
-from random import randomint
+from random import randint
 
 
 class YelpSpider(Spider):
@@ -47,9 +47,9 @@ class YelpSpider(Spider):
             'sortby=review_count&start={}'.format(x)
             for x in range(0, 960 + 1, 30)]
 
-        for url in (nyc_urls + chi_urls + 
-            la_urls + orlando_urls + lv_urls):
-            sleep(randomint(1,3))
+        for url in (nyc_urls[:1] + chi_urls[:1] + 
+            la_urls[:1] + orlando_urls[:1] + lv_urls[:1]):
+            sleep(randint(1,2))
             yield Request(url=url, callback=self.parse_search)
 
     def parse_search(self, response):
@@ -59,7 +59,7 @@ class YelpSpider(Spider):
         bizurls = ['https://yelp.com' + url for url in bizurls][1:]
         print(bizurls)
         for url in bizurls:
-            sleep(randomint(1,3))
+            sleep(randint(1,2))
             yield Request(url=url, callback=self.parse_biz_page)
 
     def parse_biz_page(self, response):
@@ -102,7 +102,7 @@ class YelpSpider(Spider):
         # item['business_link'] = business_link
 
         for url in review_urls[:1]:
-            sleep(randomint(1,3))
+            sleep(randint(1,2))
             yield Request(url=url,
                           meta={'business_name': business_name,
                                 'business_city': business_city,
@@ -177,7 +177,7 @@ class YelpSpider(Spider):
                 label = 'local'
                 count_local += 1
 
-            elif reviewer_location.split(' ')[-1] == business_state:
+            elif reviewer_location.split(' ')[-1] != business_state:
                 label = 'remote'
                 count_tourist += 1
 
