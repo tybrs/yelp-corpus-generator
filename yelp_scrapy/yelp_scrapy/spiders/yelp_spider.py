@@ -46,15 +46,14 @@ class YelpSpider(Spider):
             'sortby=review_count&start={}'.format(x)
             for x in range(0, 960 + 1, 30)]
 
-        for url in (nyc_urls[:1] + chi_urls[:1] + 
-            la_urls[:1] + orlando_urls[:1] + lv_urls[:1]):
+        for url in (nyc_urls + chi_urls + 
+            la_urls + orlando_urls + lv_urls):
             yield Request(url=url, callback=self.parse_search)
 
     def parse_search(self, response):
         print("=" * 50)
         bizurls = response.xpath(
             '//a[@class="biz-name js-analytics-click"]/@href').extract()
-        sleep(1)
         bizurls = ['https://yelp.com' + url for url in bizurls][1:]
         print(bizurls)
         for url in bizurls:
@@ -66,9 +65,12 @@ class YelpSpider(Spider):
             '//div[@class="page-of-pages '
             'arrange_unit arrange_unit--fill"]/text()').extract_first()
 
-        num_reviews = int(findall('of (\d+)', num_reviews_str)[0])
-        review_portion = int(20 * round(num_reviews * 2 / 20))
-        reviews_range = [1] + list(range(20, num_reviews * 20, review_portion))
+        if num_reviews_str:
+            num_reviews = int(findall('of (\d+)', num_reviews_str)[0])
+            review_portion = int(20 * round(num_reviews * 2 / 20))
+            reviews_range = [1] + list(range(20, num_reviews * 20, review_portion))
+        else:
+            reviews_range = [1]
 
         review_urls = [
             response.url + '?start={}'.format(i)
@@ -101,6 +103,8 @@ class YelpSpider(Spider):
                           meta={'business_name': business_name,
                                 'business_city': business_city,
                                 'business_state': business_state,
+                                'business_zip': business_zip,
+                                'business_link': business_link,
                                 'business_star_rating': business_star_rating},
                           callback=self.parse_reviews)
 
@@ -108,7 +112,9 @@ class YelpSpider(Spider):
         print("*" * 50)
         business_name = response.meta['business_name']
         business_city = response.meta['business_city']
+        business_zip = response.meta['business_zip']
         business_state = response.meta['business_state']
+        business_link = response.meta['business_link']
         business_star_rating = response.meta['business_star_rating']
 
         reviews = response.xpath('//div[@class="review review--with-sidebar"]')
@@ -178,6 +184,9 @@ class YelpSpider(Spider):
 
             item['business_name'] = business_name
             item['business_city'] = business_city
+            item['business_state'] = business_state
+            item['business_zip'] = business_zip
+            item['business_url'] = business_link
             item['business_star_rating'] = business_star_rating
 
             item['label'] = label
@@ -189,6 +198,5 @@ class YelpSpider(Spider):
             item['cool'] = cool
             item['review_text'] = review_text
             item['review_date'] = review_date
-
 
             yield item
