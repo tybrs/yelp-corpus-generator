@@ -49,7 +49,7 @@ class YelpSpider(Spider):
 
         for url in (nyc_urls + chi_urls + 
             la_urls + orlando_urls + lv_urls):
-            sleep(randint(1, 2))
+            sleep(randint(1, 3))
             yield Request(url=url, callback=self.parse_search)
 
     def parse_search(self, response):
@@ -124,9 +124,6 @@ class YelpSpider(Spider):
 
         reviews = response.xpath('//div[@class="review review--with-sidebar"]')
 
-        count_local = 0
-        count_tourist = 0
-
         for review in reviews:
 
             reviewer_location = review.xpath(
@@ -150,8 +147,10 @@ class YelpSpider(Spider):
                 '\d{1,2}\.?\d{1,2}',
                 review_raiting)[0])
 
-            review_text = review.xpath(
-                './/div[@class="review-content"]/p/text()').extract_first()
+            review_text = ''.join(review.xpath(
+                './/div[@class="review-content"]/p//text()').extract())
+
+            review_text = review_text.replace('\xa0', '')
 
             funny = review.xpath(
                 './/a[@class="ybtn ybtn--small funny js-analytics-click"]'
@@ -176,11 +175,9 @@ class YelpSpider(Spider):
 
             if business_city + ', ' + business_state == reviewer_location:
                 label = 'local'
-                count_local += 1
 
             elif reviewer_location.split(' ')[-1] != business_state:
                 label = 'remote'
-                count_tourist += 1
 
             else:
                 continue
