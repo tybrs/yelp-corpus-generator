@@ -2,7 +2,14 @@ from scrapy import Spider, Request
 from yelp_scrapy.items import YelpItem
 from re import findall
 from time import sleep
-from random import randint
+#from random import randint
+
+
+def get_urls(city):
+    return ['https://www.yelp.com/search?find_desc='
+            'Restaurants&find_loc={0}&'
+            'sortby=review_count&start={1}'.format(city, x)
+            for x in range(0, 960 + 1, 30)]
 
 
 class YelpSpider(Spider):
@@ -14,42 +21,17 @@ class YelpSpider(Spider):
 
     def parse(self, response):
 
-        # number_of_pages = response.xpath(
-        # '//span[@class="pagination-results-window"]/text()').extract_first()
-        # number_of_pages = int(findall('\s+(\d+)\s+', number_of_pages)[0])
-        nyc_urls = [
-            'https://www.yelp.com/search?find_desc='
-            'Restaurants&find_loc=New%20York%2C%20NY&'
-            'sortby=review_count&start={}'.format(x)
-            for x in range(0, 960 + 1, 30)]
+        nyc_urls = get_urls('New+York,+NY')
+        chi_urls = get_urls('Chicago,+IL')
+        la_urls = get_urls('Los+Angeles,+CA')
+        orlando_urls = get_urls('Orlando,+FL')
+        lv_urls = ('Las+Vegas,+NV')
 
-        chi_urls = [
-            'https://www.yelp.com/search?find_desc='
-            'Restaurants&find_loc=Chicago%2C%20IL&'
-            'sortby=review_count&start={}'.format(x)
-            for x in range(0, 960 + 1, 30)]
+        all_urls = (nyc_urls + chi_urls + la_urls +
+                    orlando_urls + lv_urls)
 
-        la_urls = [
-            'https://www.yelp.com/search?find_desc='
-            'Restaurants&find_loc=Los%20Angeles%2C%20CA&'
-            'sortby=review_count&start={}'.format(x)
-            for x in range(0, 960 + 1, 30)]
-
-        orlando_urls = [
-            'https://www.yelp.com/search?find_desc='
-            'Restaurants&find_loc=Orlando%2C%20FL&'
-            'sortby=review_count&start={}'.format(x)
-            for x in range(0, 960 + 1, 30)]
-
-        lv_urls = [
-            'https://www.yelp.com/search?find_desc='
-            'Restaurants&find_loc=Las%20Vegas%2C%20NV&'
-            'sortby=review_count&start={}'.format(x)
-            for x in range(0, 960 + 1, 30)]
-
-        for url in (nyc_urls + chi_urls + 
-            la_urls + orlando_urls + lv_urls):
-            sleep(randint(1, 3))
+        for url in all_urls:
+            sleep(1)
             yield Request(url=url, callback=self.parse_search)
 
     def parse_search(self, response):
@@ -59,7 +41,7 @@ class YelpSpider(Spider):
         bizurls = ['https://yelp.com' + url for url in bizurls][1:]
         print(bizurls)
         for url in bizurls:
-            sleep(randint(1, 2))
+            sleep(1)
             yield Request(url=url, callback=self.parse_biz_page)
 
     def parse_biz_page(self, response):
@@ -98,12 +80,8 @@ class YelpSpider(Spider):
             '\d{1,2}\.?\d{1,2}',
             business_star_rating)[0])
 
-        # item = YelpItem()
-        # item['business_name'] = business_name
-        # item['business_link'] = business_link
-
         for url in review_urls[:1]:
-            sleep(randint(1, 2))
+            sleep(1)
             yield Request(url=url,
                           meta={'business_name': business_name,
                                 'business_city': business_city,
