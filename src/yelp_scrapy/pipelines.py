@@ -4,7 +4,7 @@ from scrapy.exporters import CsvItemExporter
 class YelpScrapyPipeline(object):
 
     def __init__(self):
-        self.filename = 'nyc_yelp_reviews.csv'
+        self.filename = 'yelp_reviews.csv'
 
     def open_spider(self, spider):
         self.csvfile = open(self.filename, 'wb')
