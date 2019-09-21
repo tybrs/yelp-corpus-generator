@@ -2,8 +2,8 @@ from scrapy import Spider, Request
 from yelp_scrapy.items import YelpItem
 from re import findall
 from time import sleep
-#from random import randint
-
+from yaml import load
+from random import randint
 
 def get_urls(city):
     return ['https://www.yelp.com/search?find_desc='
@@ -13,6 +13,7 @@ def get_urls(city):
 
 
 class YelpSpider(Spider):
+    Spider.xpaths = load(open('yelp_scrapy/xpath.yml', 'r'))
     name = 'yelp_spider'
     allowed_urls = ['https://yelp.com']
     start_urls = [
@@ -20,52 +21,47 @@ class YelpSpider(Spider):
         'Restaurants&find_loc=New%20York%2C%20NY&sortby=review_count']
 
     def parse(self, response):
-
         nyc_urls = get_urls('New+York,+NY')
         chi_urls = get_urls('Chicago,+IL')
         la_urls = get_urls('Los+Angeles,+CA')
         orlando_urls = get_urls('Orlando,+FL')
-        lv_urls = ('Las+Vegas,+NV')
+        lv_urls = get_urls('Las+Vegas,+NV')
 
         all_urls = (nyc_urls + chi_urls + la_urls +
                     orlando_urls + lv_urls)
 
-        for url in all_urls:
+        for url in [nyc_urls[1]]:
             sleep(1)
             yield Request(url=url, callback=self.parse_search)
 
     def parse_search(self, response):
-        print("=search=" * 30)
+        print("=search=" * 10)
         bizurls = response.xpath(
-            '//a[@class="biz-name js-analytics-click"]/@href').extract()
-        bizurls = ['https://yelp.com' + url for url in bizurls][1:]
+            self.xpaths['search_page']['biz_url']).extract()
+
+        bizurls = ['https://yelp.com' + url for url in bizurls][2:]
         print(bizurls)
         for url in bizurls:
             sleep(1)
             yield Request(url=url, callback=self.parse_biz_page)
 
     def parse_biz_page(self, response):
-        print(r"%biz%" * 30)
+        print(r"%biz%" * 10)
         num_reviews_str = response.xpath(
-            '//div[@class="page-of-pages '
-            'arrange_unit arrange_unit--fill"]/text()').extract_first()
-
+            self.xpaths['reviews']['num_reviews_str']).extract_first()
         if num_reviews_str:
-            num_reviews = int(findall('of (\d+)', num_reviews_str)[0])
+            num_reviews = int(findall(r'of (\d+)', num_reviews_str)[0])
             review_portion = int(20 * round(num_reviews * 2 / 20))
             reviews_range = [1] + list(
                 range(20, num_reviews * 20, review_portion))
         else:
             reviews_range = [1]
-
-        review_urls = [
-            response.url + '?start={}'.format(i)
-            for i in reviews_range]
+        review_urls = [response.url + '?start={}'.format(i)
+                       for i in reviews_range]
 
         business_name = response.xpath(
-            '//div[@class="biz-page-header-left claim-status"]'
-            '//h1/text()').extract_first()
-        business_name = findall('\s+(.*)\s+', business_name)[0]
+            self.xpaths['biz_page']['biz_h1']).extract_first()
+        business_name = business_name.strip(' ').strip('\t')
         business_link = response.url
         business_state = response.xpath(
             '//span[@itemprop="addressRegion"]/text()').extract_first()
@@ -74,10 +70,12 @@ class YelpSpider(Spider):
         business_zip = response.xpath(
             '//span[@itemprop="postalCode"]/text()').extract_first()
         business_star_rating = response.xpath(
-            '//div[@class="biz-rating biz-rating-very-large '
-            'clearfix"]/div/@title').extract_first()
+            self.xpaths['biz_page']['business_star_rating']).extract_first()
+        business_star_rating = response.xpath(
+            self.xpaths['biz_page']['business_star_rating']).get()
+        # input(str(response.url) + '\t' + str(business_star_rating))
         business_star_rating = float(findall(
-            '\d{1,2}\.?\d{1,2}',
+            r'\d{1,1}\.?\d{0,2}',
             business_star_rating)[0])
 
         for url in review_urls[:1]:
@@ -92,7 +90,7 @@ class YelpSpider(Spider):
                           callback=self.parse_reviews)
 
     def parse_reviews(self, response):
-        print("*reviews*" * 30)
+        print("*reviews*" * 10)
         business_name = response.meta['business_name']
         business_city = response.meta['business_city']
         business_zip = response.meta['business_zip']
@@ -115,14 +113,14 @@ class YelpSpider(Spider):
                 './/span[@class="rating-qualifier"]'
                 '/text()').extract_first()
 
-            review_date = findall('\s+(.*)\s+', review_date)[0]
+            review_date = findall(r'\s+(.*)\s+', review_date)[0]
 
             review_raiting = review.xpath(
                 './/div[@class="biz-rating biz-rating-large'
                 ' clearfix"]/div/div/@title').extract_first()
 
             review_raiting = float(findall(
-                '\d{1,2}\.?\d{1,2}',
+                r'\d{1,2}\.?\d{1,2}',
                 review_raiting)[0])
 
             review_text = ''.join(review.xpath(
@@ -157,8 +155,8 @@ class YelpSpider(Spider):
             elif reviewer_location.split(' ')[-1] != business_state:
                 label = 'remote'
 
-            else:
-                continue
+            # else:
+            #     continue
 
             item = YelpItem()
 
@@ -178,5 +176,6 @@ class YelpSpider(Spider):
             item['cool'] = cool
             item['review_text'] = review_text
             item['review_date'] = review_date
+            input("input: " + str(dict(item)))
 
             yield item
