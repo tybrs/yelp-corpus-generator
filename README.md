@@ -1,4 +1,4 @@
-# Yelp Review Scrapper with Scrappy/Splach
+# Yelp Review Scraper with Scrapy/Splach
 
 ## Dependicies
 
