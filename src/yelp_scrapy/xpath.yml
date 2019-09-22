@@ -9,4 +9,8 @@ biz_page:
   # business_star_rating: //span[@class="lemon--span__373c0__3997G display--inline__373c0__1DbOG border-color--default__373c0__2oFDT"]//div/@aria-label
 reviews:
   num_reviews_str: //div[@class="lemon--div__373c0__1mboc u-padding-b2 border-color--default__373c0__2oFDT text-align--center__373c0__1l506"]/span/text()
-  review_div: 
+  review_li: //li[@class="lemon--li__373c0__1r9wz u-space-b3 u-padding-b3 border--bottom__373c0__uPbXS border-color--default__373c0__2oFDT"]
+  review_text: .//span[@class="lemon--span__373c0__3997G"]/text()
+  cool: 
+  funny:
+  reviewer_location: .//span[@class="lemon--span__373c0__3997G text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_ text-weight--bold__373c0__3HYJa text-size--small__373c0__3SGMi"]/text()
