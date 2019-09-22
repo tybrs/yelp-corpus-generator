@@ -17,7 +17,7 @@ def print_progress(func):
         print('{:<20s}{:<1d}'.format('parser call index:',
                                      count[func.__name__]))
         print('{:<20s}{:<1s}'.format('url:', response.url))
-        print('{:<20s}{:<1s}'.format('carried over data:', str(meta)))
+        # print('{:<20s}{:<1s}'.format('carried over data:', str(meta)))
         output = func(self, response)
         print('=' * 30)
         return output
@@ -124,8 +124,6 @@ class YelpSpider(Spider):
 
             reviewer_location = review.xpath(
                 self.xpaths['reviews']['reviewer_location']).extract_first()
-            print(reviewer_location)
-            input()
             #fix
             reviewer_id = review.xpath(
                 './/@data-signup-object').extract_first()
