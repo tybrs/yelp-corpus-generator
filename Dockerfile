@@ -1,10 +1,11 @@
-FROM python:3
+FROM scrapinghub/splash as base
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/yelp_scrape
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "./script.py" ]
+
+ENTRYPOINT ["/usr/src/yelp_scrape/docker-entrypoint.sh"]
