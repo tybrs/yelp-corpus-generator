@@ -1,4 +1,4 @@
-# Yelp Review Scraper with Scrapy/Splach
+# Yelp Review Scraper with Scrapy/Splash
 
 ## Dependicies
 
@@ -29,5 +29,5 @@ PyYAML==5.1.2
 
 ## TODO
 
-* Compose single docker image.
+* Use docker compose to create a second and third container for scrapy script and postgress contain
 * Improve docstrings
