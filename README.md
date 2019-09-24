@@ -1,7 +1,7 @@
-# YelpCorpusGenerator
+# Yelp CorpusG enerator
 
 ## About
-YelpCorpusGenerator is a multi-container Docker web scraping application designed to buid a database of restaurant reviews for sentiment analysis. Web scrping is performed in [Scrapy]() with JavaScript integration through [Splash]() and storage in PostgreSQL.
+Yelp Corpus Generator is a multi-container Docker web scraping application designed to buid a database of restaurant reviews for sentiment analysis. Web scrping is performed in [Scrapy]() with JavaScript integration through [Splash]() and storage in PostgreSQL.
 
 ## Installation
 
