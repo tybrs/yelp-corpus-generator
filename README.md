@@ -1,6 +1,6 @@
-# Yelp Review Scraper: Using Scrapy with JavaScript integration through Splash
+# YelpCorpusGenerator: Web Scrapper using Scrapy and JavaScript integration through Splash
 
-Yelp Review Scraper is a multi-container docker application designed to scrape restaurant reviews from Yelp.com from predefined cities.
+YelpCorpusGenerator is a multi-container Docker web scraping system designed to buid a database of restaurant reviews. 
 
 ## Installation
 
