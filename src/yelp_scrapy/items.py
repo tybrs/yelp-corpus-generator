@@ -44,15 +44,13 @@ class YelpItem(Item):
 
 # #   Review fields
 #     reviewer_name = Field()
-    reviewer_id = Field()
+    user_url = Field()
     reviewer_location = Field()
     review_text = Field()
     label = Field()
     review_date = Field()
     review_raiting = Field()
-    funny = Field()
-    useful = Field()
-    cool = Field()
+    feedback = Field()
 #     check_ins = Field()
 #     friends = Field()
 #     review_count = Field()

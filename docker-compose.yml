@@ -15,11 +15,12 @@ services:
  postgres:
   image: postgres
   environment:
-   POSTGRES_DB: ${DB_DATABASE}
-   POSTGRES_USER: ${DB_USERNAME}
-   POSTGRESS_PASSORD: ${DB_PASSWORD}
+   POSTGRES_DB: postgres
+   POSTGRES_USER: postgres
+   POSTGRESS_PASSORD: postgres
   volumes:
-   # - postgresql:/var/lib/postgresql
-   - postgresql:/var/lib/postgresql/data
+   - ./postgresql:/var/lib/postgresql/data
   ports:
-   - "54320:5432"
+   - "5432:5432"
+# volumes:
+#  postgresql:

@@ -50,7 +50,7 @@ class YelpSpider(Spider):
                     orlando_urls + lv_urls)
 
         for url in [nyc_urls[1]]:
-            sleep(1)
+            # sleep(1)
             yield SplashRequest(url=url, callback=self.parse_search)
 
     @print_progress
@@ -58,9 +58,10 @@ class YelpSpider(Spider):
         bizurls = response.xpath(
             self.xpaths['search_page']['biz_url']).extract()
 
-        bizurls = ['https://yelp.com' + url for url in bizurls][2:]
-        for url in bizurls:
-            sleep(1)
+        bizurls = ['https://yelp.com' + url for url in bizurls
+                   if not url.startswith('https://')][2:]
+        for url in [bizurls[0]]:
+            # sleep(1)
             yield SplashRequest(url=url, callback=self.parse_biz_page)
 
     @print_progress
@@ -103,11 +104,11 @@ class YelpSpider(Spider):
                 'business_link': business_link,
                 'business_star_rating': business_star_rating}
 
-        for url in review_urls[:1]:
+        for url in [review_urls[1]]:
             sleep(1)
             yield SplashRequest(url=url,
-                          meta=meta,
-                          callback=self.parse_reviews)
+                                meta=meta,
+                                callback=self.parse_reviews)
 
     @print_progress
     def parse_reviews(self, response):
@@ -124,58 +125,40 @@ class YelpSpider(Spider):
 
             reviewer_location = review.xpath(
                 self.xpaths['reviews']['reviewer_location']).extract_first()
-            #fix
-            reviewer_id = review.xpath(
-                './/@data-signup-object').extract_first()
-            #fix
+
+            user_url = review.xpath(
+                self.xpaths['reviews']['user_url']).extract_first()
+
             review_date = review.xpath(
-                './/span[@class="rating-qualifier"]'
-                '/text()').extract_first()
+                self.xpaths['reviews']['date']).extract_first()
 
             review_date = (review_date.strip(' ').strip('\t')
                            if review_date else None)
-            #fix
-            review_raiting = review.xpath(
-                './/div[@class="biz-rating biz-rating-large'
-                ' clearfix"]/div/div/@title').extract_first()
 
-            # review_raiting = float(findall(
-            #     r'\d{1,2}\.?\d{1,2}',
-            #     review_raiting)[0])
+            review_raiting = review.xpath(
+                self.xpaths['reviews']['raiting']).extract_first()
+
+            review_raiting = (float(findall(
+                              r'\d{1,2}\.?\d{1,2}',
+                              review_raiting)[0])
+                              if review_raiting else None)
 
             review_text = ''.join(review.xpath(
                 self.xpaths['reviews']['review_text']).extract())
 
             review_text = review_text.replace('\xa0', '')
 
-            #fix
-            funny = review.xpath(
-                './/a[@class="ybtn ybtn--small funny js-analytics-click"]'
-                '/span[3]/text()').extract_first()
+            feedback = review.xpath(
+                self.xpaths['reviews']['review_text']).extract()
 
-            funny = int(funny) if funny else None
+            if business_city + ', ' + business_state == reviewer_location:
+                label = 'local'
 
-            #fix
-            useful = review.xpath(
-                './/a[@class="ybtn ybtn--small useful js-analytics-click"]'
-                '/span[3]/text()').extract_first()
+            elif reviewer_location and reviewer_location.split(' ')[-1] != business_state:
+                label = 'remote'
 
-            useful = int(useful) if useful else None
-            #fix
-            cool = review.xpath(
-                './/a[@class="ybtn ybtn--small cool js-analytics-click"]'
-                '/span[3]/text()').extract_first()
-
-            cool = int(cool) if cool else None
-
-            # if business_city + ', ' + business_state == reviewer_location:
-            #     label = 'local'
-
-            # elif reviewer_location and reviewer_location.split(' ')[-1] != business_state:
-            #     label = 'remote'
-
-            # else:
-            #     continue
+            else:
+                label = None
 
             item = YelpItem()
 
@@ -186,13 +169,11 @@ class YelpSpider(Spider):
             item['business_url'] = business_link
             item['business_star_rating'] = business_star_rating
 
-            # item['label'] = label
-            item['reviewer_id'] = reviewer_id
+            item['label'] = label
+            item['user_url'] = user_url
             item['review_raiting'] = review_raiting
             item['reviewer_location'] = reviewer_location
-            item['funny'] = funny
-            item['useful'] = useful
-            item['cool'] = cool
             item['review_text'] = review_text
             item['review_date'] = review_date
+            item['feedback'] = feedback
             yield item

@@ -4,9 +4,9 @@ class YelpScrapyPipeline(object):
 
     def __init__(self):
         self.host = 'postgres'
-        self.user = ''
-        self.passwd = ''
-        self.db = ''
+        self.user = 'postgres'
+        self.passwd = 'postgres'
+        self.db = 'yelp_reviews'
 
     def open_spider(self, spider):
         self.conn = psycopg2.connect(host=self.host,
@@ -21,13 +21,26 @@ class YelpScrapyPipeline(object):
         self.conn.close()
 
     def process_item(self, item, spider):
-        query = """INSERT INTO table (field, field)
-                VALUES (%s, %s)"""
+        query = """INSERT INTO biz (name, city, zipcode,
+                                    state, link, star_raiting)
+                VALUES (%s, %s, %s, %s, %s, %s)"""
 
-        values = (item['field1'], item['field2'], item['field3'],
-                  item['field4'], item['field5'], item['field6'],
-                  item['field7'], item['field8'])
+        values = (item['business_name'], item['business_city'],
+                  item['business_zip'], item['business_state'],
+                  item['business_url'], item['business_star_rating'])
 
-        self.cur.execute(query, values)
+        self.cursor.execute(query, values)
+        self.conn.commit()
+
+        query = """INSERT INTO reviewers (user_url, star_raiting, location,
+                                          review_text, review_date)
+        VALUES (%s, %s, %s, %s, %s)"""
+
+        values = (item['user_url'], item['review_raiting'],
+                  item['reviewer_location'], item['review_text'],
+                  item['review_date'])
+
+        self.cursor.execute(query, values)
+
         self.conn.commit()
         return item
