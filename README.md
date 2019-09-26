@@ -29,8 +29,8 @@ If your perfered package manager does not have a repository for `docker-compose`
 
 ## Usage
 
-Start network and begin scrapping with the following command.
-``$ sudo docker-compose up -d``
+Start services and begin scrapping with the following command:
+``$ sudo docker-compose up``
 
 **TODO**
 
