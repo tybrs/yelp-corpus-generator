@@ -1,18 +1,20 @@
-from scrapy import Spider, Request
+from scrapy import Spider
 from scrapy_splash import SplashRequest
 from yelp_scrapy.items import UserItem, BizItem
 from re import findall
-from time import sleep
-from yaml import load
-from random import randint
+from yaml import load, SafeLoader
 from collections import defaultdict
+# from time import sleep
+# from random import randint
+
 
 def print_progress(func):
-    count = defaultdict(lambda:0)
+    count = defaultdict(lambda: 0)
+
     def helper(self, response):
         count[func.__name__] += 1
-        meta = {k: response.meta[k] for k in response.meta
-                if not k.startswith('download')}
+        # meta = {k: response.meta[k] for k in response.meta
+        #         if not k.startswith('download')}
         print('{:=^30}'.format(func.__name__))
         print('{:<20s}{:<1d}'.format('parser call index:',
                                      count[func.__name__]))
@@ -22,6 +24,7 @@ def print_progress(func):
         return output
     return helper
 
+
 def get_urls(city):
     return ['https://www.yelp.com/search?find_desc='
             'Restaurants&find_loc={0}&'
@@ -30,7 +33,8 @@ def get_urls(city):
 
 
 class YelpSpider(Spider):
-    Spider.xpaths = load(open('yelp_scrapy/xpath.yml', 'r'))
+    Spider.xpaths = load(open('yelp_scrapy/xpath.yml', 'r'),
+                         Loader=SafeLoader)
     name = 'yelp_spider'
     allowed_urls = ['https://yelp.com']
     start_urls = ['https://www.yelp.com/search?find_desc='
@@ -69,7 +73,7 @@ class YelpSpider(Spider):
         num_reviews_str = response.xpath(
             self.xpaths['reviews']['num_reviews_str']).extract_first()
 
-        #make into function
+        # make into function
         if num_reviews_str:
             num_reviews = int(findall(r'of (\d+)', num_reviews_str)[0])
             review_portion = int(20 * round(num_reviews * 2 / 20))
@@ -77,7 +81,6 @@ class YelpSpider(Spider):
                 range(20, num_reviews * 20, review_portion))
         else:
             reviews_range = [1]
-
 
         business_name = response.xpath(
             self.xpaths['biz_page']['biz_h1']).extract_first()
@@ -124,7 +127,7 @@ class YelpSpider(Spider):
         business_state = response.meta['business_state']
         reviews = response.xpath(self.xpaths['reviews']['review_li'])
 
-        #make into function
+        # make into function
         for review in reviews:
 
             reviewer_location = review.xpath(

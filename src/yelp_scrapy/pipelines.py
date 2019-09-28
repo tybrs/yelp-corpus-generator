@@ -92,7 +92,7 @@ class YelpScrapyPipeline(object):
 
     def process_item(self, item, spider):
 
-        if isinstance(item, BizItem)s:
+        if isinstance(item, BizItem):
             self.save_biz(item)
 
         if isinstance(item, UserItem):
