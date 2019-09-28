@@ -12,7 +12,7 @@ before_install:
   # be non-interactive (normally it asks you a bunch of config questions).
   - docker-compose --version
 
-  # - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
+  - sudo apt-get install --force-yes -y docker-engine
   # Print out the current docker-compose version. Once this reports 1.6+ then we
   # do not need the following steps.
   - sudo rm /usr/local/bin/docker-compose
