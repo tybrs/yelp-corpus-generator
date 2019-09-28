@@ -47,15 +47,6 @@ class YelpScrapyPipeline(object):
         self.cursor.execute(query)
         self.conn.commit()
 
-    # @classmethod
-    # def from_crawler(cls, crawler):
-    #     return cls(
-    #         host=crawler.settings.get('POSTGRESS_HOST'),
-    #         user
-    #         password
-    #         db=crawler.settings.get('MONGO_DATABASE', 'items')
-    #     )
-
     def get_value(self, query):
         self.cursor.execute(query)
         record = self.cursor.fetchone()
@@ -75,7 +66,7 @@ class YelpScrapyPipeline(object):
                                     state, link, star_raiting)
                 VALUES (%s, %s, %s, %s, %s, %s)"""
 
-        values = (item['business_name'], item['business_city'],
+        values = (item['business_name'], item['businessty_city'],
                   item['business_zip'], item['business_state'],
                   item['business_url'], item['business_star_rating'])
 
@@ -101,7 +92,7 @@ class YelpScrapyPipeline(object):
 
     def process_item(self, item, spider):
 
-        if isinstance(item, BizItem):
+        if isinstance(item, BizItem)s:
             self.save_biz(item)
 
         if isinstance(item, UserItem):
