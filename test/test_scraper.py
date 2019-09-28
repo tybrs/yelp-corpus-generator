@@ -1,4 +1,3 @@
-import pytest
 import requests
 from scrapy.http import Request, TextResponse
 from yaml import load, SafeLoader
@@ -25,3 +24,6 @@ def test_xpaths():
         for key, xpath in page_xpaths.items():
             extraction = response.xpath(xpath).extract()
             assert extraction, f"xpath for {key} failed"
+
+if __name__ == '__main__':
+    test_xpaths()
