@@ -11,8 +11,6 @@ before_install:
 before_script:
   - docker-compose up -d --build
 script:
-  - docker-compose exec users python manage.py test
-  - docker-compose exec users black project
-  - docker-compose exec users flake8 project
+  - docker-compose exec scrapy pytest test/
 after_script:
   - docker-compose down
