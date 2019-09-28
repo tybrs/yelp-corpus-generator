@@ -1,6 +1,6 @@
 from scrapy import Spider, Request
 from scrapy_splash import SplashRequest
-from yelp_scrapy.items import YelpItem
+from yelp_scrapy.items import UserItem, BizItem
 from re import findall
 from time import sleep
 from yaml import load
@@ -60,6 +60,7 @@ class YelpSpider(Spider):
 
         bizurls = ['https://yelp.com' + url for url in bizurls
                    if not url.startswith('https://')][2:]
+
         for url in [bizurls[0]]:
             # sleep(1)
             yield SplashRequest(url=url, callback=self.parse_biz_page)
@@ -96,6 +97,15 @@ class YelpSpider(Spider):
         business_star_rating = float(findall(
             r'\d{1,1}\.?\d{0,2}',
             business_star_rating)[0])
+
+        item = BizItem()
+
+        item['business_name'] = business_name
+        item['business_city'] = business_city
+        item['business_state'] = business_state
+        item['business_zip'] = business_zip
+        item['business_url'] = business_link
+        item['business_star_rating'] = business_star_rating
 
         meta = {'business_name': business_name,
                 'business_city': business_city,
@@ -160,14 +170,7 @@ class YelpSpider(Spider):
             else:
                 label = None
 
-            item = YelpItem()
-
-            item['business_name'] = business_name
-            item['business_city'] = business_city
-            item['business_state'] = business_state
-            item['business_zip'] = business_zip
-            item['business_url'] = business_link
-            item['business_star_rating'] = business_star_rating
+            item = UserItem()
 
             item['label'] = label
             item['user_url'] = user_url

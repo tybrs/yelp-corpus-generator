@@ -1,24 +1,17 @@
 from scrapy import Item, Field
 
 
-class YelpItem(Item):
+class BizItem(Item):
 
-#   Search page business fields
     business_name = Field()
     business_city = Field()
     business_state = Field()
     business_url = Field()
     business_zip = Field()
     business_star_rating = Field()
-
 #     number_of_reviews = Field()
 #     price = Field()
 #     cuisine = Field()
-
-# #   Business page Fields
-#     business_link = Field()
-#     number_of_photos = Field()
-
 #     liked_by_vegetarians = Field()
 #     takes_reservations = Field()
 #     delivery = Field()
@@ -42,8 +35,8 @@ class YelpItem(Item):
 #     drive_thru = Field()
 #     caters = Field()
 
-# #   Review fields
-#     reviewer_name = Field()
+class UserItem():
+# Review fields
     user_url = Field()
     reviewer_location = Field()
     review_text = Field()

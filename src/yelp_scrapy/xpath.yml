@@ -1,5 +1,5 @@
 search_page:
-  biz_url: //h3[@class="lemon--h3__373c0__sQmiG heading--h3__373c0__1n4Of alternate__373c0__1uacp"]/a/@href
+  biz_url: //p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--black-regular__373c0__38bRH text-align--left__373c0__2pnx_ text-size--inherit__373c0__2gFQ3"]/a/@href
 biz_page:
   biz_h1: //h1[@class="lemon--h1__373c0__2ZHSL heading--h1__373c0__1VUMO heading--no-spacing__373c0__1PzQP heading--inline__373c0__1F-Z6"]/text()
   business_state: //span[@itemprop="addressRegion"]/text()
