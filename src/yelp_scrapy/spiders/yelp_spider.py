@@ -17,7 +17,6 @@ def print_progress(func):
         print('{:<20s}{:<1d}'.format('parser call index:',
                                      count[func.__name__]))
         print('{:<20s}{:<1s}'.format('url:', response.url))
-        # print('{:<20s}{:<1s}'.format('carried over data:', str(meta)))
         output = func(self, response)
         print('=' * 30)
         return output
@@ -107,30 +106,16 @@ class YelpSpider(Spider):
         item['business_url'] = business_link
         item['business_star_rating'] = business_star_rating
 
-        meta = {'business_name': business_name,
-                'business_city': business_city,
-                'business_state': business_state,
-                'business_zip': business_zip,
-                'business_link': business_link,
-                'business_star_rating': business_star_rating}
-
         for url in [review_urls[1]]:
             sleep(1)
             yield SplashRequest(url=url,
-                                meta=meta,
                                 callback=self.parse_reviews)
 
     @print_progress
     def parse_reviews(self, response):
-        business_name = response.meta['business_name']
-        business_city = response.meta['business_city']
-        business_zip = response.meta['business_zip']
-        business_state = response.meta['business_state']
-        business_link = response.meta['business_link']
-        business_star_rating = response.meta['business_star_rating']
 
         reviews = response.xpath(self.xpaths['reviews']['review_li'])
-
+        #make into function
         for review in reviews:
 
             reviewer_location = review.xpath(
@@ -161,6 +146,7 @@ class YelpSpider(Spider):
             feedback = review.xpath(
                 self.xpaths['reviews']['review_text']).extract()
 
+            # make into function
             if business_city + ', ' + business_state == reviewer_location:
                 label = 'local'
 
@@ -171,7 +157,6 @@ class YelpSpider(Spider):
                 label = None
 
             item = UserItem()
-
             item['label'] = label
             item['user_url'] = user_url
             item['review_raiting'] = review_raiting
