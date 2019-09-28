@@ -5,7 +5,7 @@ from yaml import load, SafeLoader
 
 
 def test_xpaths():
-    config = load(open('../src/yelp_scrapy/xpath.yml', 'r'),
+    config = load(open('src/yelp_scrapy/xpath.yml', 'r'),
                   Loader=SafeLoader)
 
     for page in config:

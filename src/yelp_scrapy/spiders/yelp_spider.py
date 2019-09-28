@@ -145,10 +145,9 @@ class YelpSpider(Spider):
             review_raiting = review.xpath(
                 self.xpaths['reviews']['raiting']).extract_first()
 
-            review_raiting = (float(findall(
-                              r'\d{1,2}\.?\d{1,2}',
-                              review_raiting)[0])
-                              if review_raiting else None)
+            if review_raiting:
+                review_raiting = float(findall(r'\d{1,2}\.?\d{1,2}',
+                                               review_raiting)[0])
 
             review_text = ''.join(review.xpath(
                 self.xpaths['reviews']['review_text']).extract())

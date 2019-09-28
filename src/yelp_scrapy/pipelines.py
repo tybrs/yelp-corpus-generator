@@ -9,10 +9,12 @@ class YelpScrapyPipeline(object):
         self.user = 'postgres'
         self.passwd = 'postgres'
         self.db = 'yelp_reviews'
+        self.port = 5432
 
     def open_spider(self, spider):
         self.conn = psycopg2.connect(host=self.host,
                                      user=self.user,
+                                     port=self.port,
                                      password=self.passwd)
 
         self.conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -66,7 +68,7 @@ class YelpScrapyPipeline(object):
                                     state, link, star_raiting)
                 VALUES (%s, %s, %s, %s, %s, %s)"""
 
-        values = (item['business_name'], item['businessty_city'],
+        values = (item['business_name'], item['business_city'],
                   item['business_zip'], item['business_state'],
                   item['business_url'], item['business_star_rating'])
 

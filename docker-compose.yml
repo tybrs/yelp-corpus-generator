@@ -3,7 +3,7 @@ services:
  splash:
   image: scrapinghub/splash
   ports:
-   - "8050:8050"
+   - 8050:8050
 
  scrapy:
   build:
@@ -21,4 +21,4 @@ services:
   volumes:
    - ./postgresql:/var/lib/postgresql/data
   ports:
-   - "5432:5432"
+   - 5435:5432
