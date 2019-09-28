@@ -3,6 +3,8 @@
 ## About
 Yelp Corpus Generator is a multi-container Docker web scraping application designed to buid a database of restaurant reviews for sentiment analysis. Web scrping is performed in [Scrapy]() with JavaScript integration through [Splash]() and storage in PostgreSQL.
 
+![docker-services-arch](docker-services-arch.png)
+
 ## Installation
 
 ### Dependencies
