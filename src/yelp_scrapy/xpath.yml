@@ -1,6 +1,8 @@
 search_page:
+  test_url: 
   biz_url: //p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--black-regular__373c0__38bRH text-align--left__373c0__2pnx_ text-size--inherit__373c0__2gFQ3"]/a/@href
 biz_page:
+  test_url: 
   biz_h1: //h1[@class="lemon--h1__373c0__2ZHSL heading--h1__373c0__1VUMO heading--no-spacing__373c0__1PzQP heading--inline__373c0__1F-Z6"]/text()
   business_state: //span[@itemprop="addressRegion"]/text()
   business_city: //span[@itemprop="addressLocality"]/text()
@@ -8,6 +10,7 @@ biz_page:
   business_star_rating: //div[@class="lemon--div__373c0__1mboc arrange__373c0__UHqhV gutter-6__373c0__zqA5A vertical-align-middle__373c0__2TQsQ u-space-b1 border-color--default__373c0__2oFDT"]//div/@aria-label
   # business_star_rating: //span[@class="lemon--span__373c0__3997G display--inline__373c0__1DbOG border-color--default__373c0__2oFDT"]//div/@aria-label
 reviews:
+  test_url: 
   num_reviews_str: //div[@class="lemon--div__373c0__1mboc u-padding-b2 border-color--default__373c0__2oFDT text-align--center__373c0__1l506"]/span/text()
   review_li: //li[@class="lemon--li__373c0__1r9wz u-space-b3 u-padding-b3 border--bottom__373c0__uPbXS border-color--default__373c0__2oFDT"]
   review_text: .//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f comment__373c0__3EKjH text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]/span/text()

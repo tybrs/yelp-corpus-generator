@@ -99,7 +99,6 @@ class YelpScrapyPipeline(object):
         self.conn.commit()
         return item
 
-
     def process_item(self, item, spider):
 
         if isinstance(item, BizItem):

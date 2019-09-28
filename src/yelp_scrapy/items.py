@@ -35,8 +35,8 @@ class BizItem(Item):
 #     drive_thru = Field()
 #     caters = Field()
 
-class UserItem():
-# Review fields
+class UserItem(Item):
+
     user_url = Field()
     reviewer_location = Field()
     review_text = Field()

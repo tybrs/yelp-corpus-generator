@@ -68,6 +68,8 @@ class YelpSpider(Spider):
     def parse_biz_page(self, response):
         num_reviews_str = response.xpath(
             self.xpaths['reviews']['num_reviews_str']).extract_first()
+
+        #make into function
         if num_reviews_str:
             num_reviews = int(findall(r'of (\d+)', num_reviews_str)[0])
             review_portion = int(20 * round(num_reviews * 2 / 20))
@@ -76,8 +78,6 @@ class YelpSpider(Spider):
         else:
             reviews_range = [1]
 
-        review_urls = [response.url + '&start={}'.format(i)
-                       for i in reviews_range]
 
         business_name = response.xpath(
             self.xpaths['biz_page']['biz_h1']).extract_first()
@@ -98,7 +98,6 @@ class YelpSpider(Spider):
             business_star_rating)[0])
 
         item = BizItem()
-
         item['business_name'] = business_name
         item['business_city'] = business_city
         item['business_state'] = business_state
@@ -106,15 +105,25 @@ class YelpSpider(Spider):
         item['business_url'] = business_link
         item['business_star_rating'] = business_star_rating
 
+        yield item
+
+        review_urls = [response.url + '&start={}'.format(i)
+                       for i in reviews_range]
+
         for url in [review_urls[1]]:
-            sleep(1)
+            # sleep(1)
             yield SplashRequest(url=url,
+                                meta={'business_city': business_city,
+                                      'business_state': business_state},
                                 callback=self.parse_reviews)
 
     @print_progress
     def parse_reviews(self, response):
 
+        business_city = response.meta['business_city']
+        business_state = response.meta['business_state']
         reviews = response.xpath(self.xpaths['reviews']['review_li'])
+
         #make into function
         for review in reviews:
 
@@ -147,12 +156,14 @@ class YelpSpider(Spider):
                 self.xpaths['reviews']['review_text']).extract()
 
             # make into function
-            if business_city + ', ' + business_state == reviewer_location:
+            business_loc = business_city + ', ' + business_state
+            reviewer_date = reviewer_location.split(' ')[-1]
+
+            if business_loc == reviewer_location:
                 label = 'local'
 
-            elif reviewer_location and reviewer_location.split(' ')[-1] != business_state:
+            elif reviewer_location and reviewer_date != business_state:
                 label = 'remote'
-
             else:
                 label = None
 
@@ -164,4 +175,5 @@ class YelpSpider(Spider):
             item['review_text'] = review_text
             item['review_date'] = review_date
             item['feedback'] = feedback
+
             yield item
