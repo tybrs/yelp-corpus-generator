@@ -16,7 +16,7 @@ reviews:
   review_text: .//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f comment__373c0__3EKjH text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]/span/text()
   date: .//span[@class="lemon--span__373c0__3997G text__373c0__2pB8f text-color--mid__373c0__3G312 text-align--left__373c0__2pnx_"]/text()
   name: .//span[@class="lemon--span__373c0__3997G text__373c0__2pB8f fs-block text-color--inherit__373c0__w_15m text-align--left__373c0__2pnx_ text-weight--bold__373c0__3HYJa"]/text()
-  user_url: .//a[class="lemon--a__373c0__IEZFH link__373c0__29943 link-color--blue-dark__373c0__1mhJo link-size--default__373c0__1skgq"]/@href
-  raiting: .//div[class="lemon--div__373c0__1mboc i-stars__373c0__30xVZ i-stars--regular-5__373c0__3En2C border-color--default__373c0__2oFDT overflow--hidden__373c0__8Jq2I"]/@aria-label
+  user_url: .//a[@class="lemon--a__373c0__IEZFH link__373c0__29943 link-color--blue-dark__373c0__1mhJo link-size--default__373c0__1skgq"]/@href
+  raiting: .//div[@class="lemon--div__373c0__1mboc i-stars__373c0__30xVZ i-stars--regular-5__373c0__3En2C border-color--default__373c0__2oFDT overflow--hidden__373c0__8Jq2I"]/@aria-label
   reviewer_location: .//span[@class="lemon--span__373c0__3997G text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_ text-weight--bold__373c0__3HYJa text-size--small__373c0__3SGMi"]/text()
   feedback: .//div[@class="lemon--div__373c0__1mboc arrange__373c0__UHqhV vertical-align-middle__373c0__2TQsQ border-color--default__373c0__2oFDT"]//span/text()
