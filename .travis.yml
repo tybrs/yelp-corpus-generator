@@ -12,7 +12,6 @@ before_install:
 before_script:
   - docker-compose up -d --build
 script:
-  # - pip install --no-cache-dir -r requirements.txt
   - pytest test/test_scraper.py
 after_script:
   - docker-compose down

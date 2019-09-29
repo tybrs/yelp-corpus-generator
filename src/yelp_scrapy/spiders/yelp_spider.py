@@ -4,38 +4,15 @@ from yelp_scrapy.items import UserItem, BizItem
 from re import findall
 from yaml import load, SafeLoader
 from collections import defaultdict
+from scrape_utils import print_progress, get_urls
 # from time import sleep
-# from random import randint
-
-
-def print_progress(func):
-    count = defaultdict(lambda: 0)
-
-    def helper(self, response):
-        count[func.__name__] += 1
-        # meta = {k: response.meta[k] for k in response.meta
-        #         if not k.startswith('download')}
-        print('{:=^30}'.format(func.__name__))
-        print('{:<20s}{:<1d}'.format('parser call index:',
-                                     count[func.__name__]))
-        print('{:<20s}{:<1s}'.format('url:', response.url))
-        output = func(self, response)
-        print('=' * 30)
-        return output
-    return helper
-
-
-def get_urls(city):
-    return ['https://www.yelp.com/search?find_desc='
-            'Restaurants&find_loc={0}&'
-            'sortby=review_count&start={1}'.format(city, x)
-            for x in range(0, 960 + 1, 30)]
 
 
 class YelpSpider(Spider):
     Spider.xpaths = load(open('yelp_scrapy/xpath.yml', 'r'),
                          Loader=SafeLoader)
     name = 'yelp_spider'
+
     allowed_urls = ['https://yelp.com']
     start_urls = ['https://www.yelp.com/search?find_desc='
                   'Restaurants&find_loc=New%20York%2C%20NY'
@@ -52,7 +29,7 @@ class YelpSpider(Spider):
         all_urls = (nyc_urls + chi_urls + la_urls +
                     orlando_urls + lv_urls)
 
-        for url in [nyc_urls[1]]:
+        for url in [nyc_urls[0]]:
             # sleep(1)
             yield SplashRequest(url=url, callback=self.parse_search)
 
@@ -64,7 +41,7 @@ class YelpSpider(Spider):
         bizurls = ['https://yelp.com' + url for url in bizurls
                    if not url.startswith('https://')][2:]
 
-        for url in [bizurls[0]]:
+        for url in bizurls:
             # sleep(1)
             yield SplashRequest(url=url, callback=self.parse_biz_page)
 
@@ -113,7 +90,7 @@ class YelpSpider(Spider):
         review_urls = [response.url + '&start={}'.format(i)
                        for i in reviews_range]
 
-        for url in [review_urls[1]]:
+        for url in review_urls[:1]:
             # sleep(1)
             yield SplashRequest(url=url,
                                 meta={'business_city': business_city,
@@ -161,12 +138,12 @@ class YelpSpider(Spider):
 
             # make into function
             business_loc = business_city + ', ' + business_state
-            reviewer_date = reviewer_location.split(' ')[-1]
+            reviewer_state = reviewer_location.split(' ')[-1]
 
             if business_loc == reviewer_location:
                 label = 'local'
 
-            elif reviewer_location and reviewer_date != business_state:
+            elif reviewer_location and reviewer_state != business_state:
                 label = 'remote'
             else:
                 label = None

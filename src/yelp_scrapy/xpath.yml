@@ -8,7 +8,6 @@ biz_page:
   business_city: //span[@itemprop="addressLocality"]/text()
   business_zip: //span[@itemprop="postalCode"]/text()
   business_star_rating: //div[@class="lemon--div__373c0__1mboc arrange__373c0__UHqhV gutter-6__373c0__zqA5A vertical-align-middle__373c0__2TQsQ u-space-b1 border-color--default__373c0__2oFDT"]//div/@aria-label
-  # business_star_rating: //span[@class="lemon--span__373c0__3997G display--inline__373c0__1DbOG border-color--default__373c0__2oFDT"]//div/@aria-label
 reviews:
   test_url: https://www.yelp.com/biz/katzs-delicatessen-new-york?ohttps://www.yelp.com/biz/katzs-delicatessen-new-york?osq=Restaurantssq=Restaurants&start=20
   num_reviews_str: //div[@class="lemon--div__373c0__1mboc u-padding-b2 border-color--default__373c0__2oFDT text-align--center__373c0__1l506"]/span/text()

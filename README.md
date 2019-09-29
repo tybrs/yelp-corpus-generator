@@ -37,6 +37,8 @@ Start services and begin scrapping with the following command:
 
 ``$ sudo docker-compose up``
 
+## Testing
+
 **TODO**
 
 * Improve documentation and docstrings.
