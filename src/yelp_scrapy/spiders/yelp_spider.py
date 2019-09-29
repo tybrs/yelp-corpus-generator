@@ -9,6 +9,10 @@ from scrape_utils import print_progress, get_urls
 
 
 class YelpSpider(Spider):
+    """Scrapy Spider subclass designed to crawl all businesses
+    on Yelp search page for resturant reviews.
+    """
+
     Spider.xpaths = load(open('yelp_scrapy/xpath.yml', 'r'),
                          Loader=SafeLoader)
     name = 'yelp_spider'
@@ -20,6 +24,9 @@ class YelpSpider(Spider):
 
     @print_progress
     def parse(self, response):
+        """Root parse function for spider to colllect all urls
+        to vbe parsed
+        """
         nyc_urls = get_urls('New+York,+NY')
         chi_urls = get_urls('Chicago,+IL')
         la_urls = get_urls('Los+Angeles,+CA')
