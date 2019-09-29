@@ -11,8 +11,8 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 before_script:
   - docker-compose up -d --build
-# script:
-#   - pip install --no-cache-dir -r requirements.txt
-#   - test/test_scraper.py
+script:
+  # - pip install --no-cache-dir -r requirements.txt
+  - pytest test/test_scraper.py
 after_script:
   - docker-compose down
