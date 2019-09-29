@@ -1,2 +1,3 @@
+postgresql
 *.csv
 __pycache__
