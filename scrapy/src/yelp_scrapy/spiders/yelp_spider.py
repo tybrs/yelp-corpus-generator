@@ -3,7 +3,7 @@ from scrapy_splash import SplashRequest
 from yelp_scrapy.items import UserItem, BizItem
 from re import findall
 from yaml import load, SafeLoader
-from scrape_utils import print_progress, get_urls
+from .scrape_utils import print_progress, get_urls
 # from time import sleep
 
 

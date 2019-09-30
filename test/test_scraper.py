@@ -7,7 +7,7 @@ def test_xpaths():
     """Unit test to make sure all xpaths in src/yelp_scrapy/xpath.yml
     retrieve a non-empty output for predefined test urls.
     """
-    config = load(open('src/yelp_scrapy/xpath.yml', 'r'),
+    config = load(open('scrapy/src/yelp_scrapy/xpath.yml', 'r'),
                   Loader=SafeLoader)
 
     for page in config:
