@@ -1,3 +1,6 @@
+from collections import defaultdict
+
+
 def print_progress(func):
     count = defaultdict(lambda: 0)
 
