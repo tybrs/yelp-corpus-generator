@@ -1,6 +1,6 @@
 # Yelp Corpus Generator
 
-![](https://travis-ci.com/images/logos/TravisCI-Mascot-grey.eps=16x16)[![Build Status](https://travis-ci.org/tybrs/yelp-corpus-generator.svg?branch=master)](https://travis-ci.org/tybrs/yelp-corpus-generator)
+![](https://travis-ci.com/images/logos/TravisCI-Mascot-1.png=16x16)[![Build Status](https://travis-ci.org/tybrs/yelp-corpus-generator.svg?branch=master)](https://travis-ci.org/tybrs/yelp-corpus-generator)
 
 ## About
 Yelp Corpus Generator is a multi-container Docker web scraping application designed to build a database of restaurant reviews for sentiment analysis. Web scarping is performed in [Scrapy](https://github.com/scrapy/scrapy) with JavaScript integration through [Splash](https://hub.docker.com/r/scrapinghub/splash) and storage in PostgreSQL. Build status logged at [Travis CI](https://travis-ci.org/tybrs/yelp-corpus-generator).
