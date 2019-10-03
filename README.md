@@ -41,3 +41,6 @@ Start services and begin scrapping with the following command:
 **TODO**
 
 * Improve documentation and docstrings.
+* Look into adding scrapy `JOBDIR` support.
+* Look into addig a wait function.
+* Tweak scrapy `RANDOMIZE_DOWNLOAD_DELAY`
