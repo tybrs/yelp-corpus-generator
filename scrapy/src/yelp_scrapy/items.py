@@ -2,7 +2,6 @@ from scrapy import Item, Field
 
 
 class BizItem(Item):
-
     business_name = Field()
     business_city = Field()
     business_state = Field()
@@ -36,7 +35,6 @@ class BizItem(Item):
 #     caters = Field()
 
 class UserItem(Item):
-
     user_url = Field()
     reviewer_location = Field()
     review_text = Field()
@@ -44,6 +42,7 @@ class UserItem(Item):
     review_date = Field()
     review_raiting = Field()
     feedback = Field()
+    link = Field()
 #     check_ins = Field()
 #     friends = Field()
 #     review_count = Field()
