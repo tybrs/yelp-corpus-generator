@@ -44,18 +44,6 @@ class YelpSpider(Spider):
             # sleep(1)
             yield SplashRequest(url=url, callback=self.parse_biz_page)
 
-    # @print_progress
-    # def parse_search(self, response):
-    #     bizurls = response.xpath(
-    #         self.xpaths['search_page']['biz_url']).extract()
-
-    #     bizurls = ['https://yelp.com' + url for url in bizurls
-    #                if not url.startswith('https://')][2:]
-
-    #     for url in bizurls:
-    #         # sleep(1)
-    #         yield SplashRequest(url=url, callback=self.parse_biz_page)
-
     @print_progress
     def parse_biz_page(self, response):
         num_reviews_str = response.xpath(
