@@ -6,8 +6,7 @@ def print_progress(func):
 
     def helper(self, response):
         count[func.__name__] += 1
-        # meta = {k: response.meta[k] for k in response.meta
-        #         if not k.startswith('download')}
+
         print('{:=^30}'.format(func.__name__))
         print('{:<20s}{:<1d}'.format('parser call index:',
                                      count[func.__name__]))

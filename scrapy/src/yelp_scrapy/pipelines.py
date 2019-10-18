@@ -3,6 +3,10 @@ from .db_utils import PgsqlHandler
 
 
 class YelpScrapyPipeline(object):
+    """Scrapy Pipline for initializing PostgreSQL database
+    and saving UserItem and BizItem to respective tables
+    with database API.
+    """
 
     def __init__(self):
         self.host = 'postgres'
@@ -12,15 +16,21 @@ class YelpScrapyPipeline(object):
         self.port = 5432
 
     def open_spider(self, spider):
+        """Initialize database connection and cursor
+        """
         self.db_h = PgsqlHandler()
         self.conn = self.db_h.conn
         self.cursor = self.db_h.cursor
 
     def close_spider(self, spider):
+        """Close database API conection
+        """
         self.cursor.close()
         self.conn.close()
 
     def save_biz(self, item):
+        """Execute query to save BizItem to biz table 
+        """
         query = """INSERT INTO biz (name, city, zipcode,
                                     state, link, star_raiting)
                 VALUES (%s, %s, %s, %s, %s, %s)"""
@@ -33,6 +43,8 @@ class YelpScrapyPipeline(object):
         return item
 
     def save_user(self, item):
+        """Execute query to save UserItem to reviewers table
+        """
         biz_id = self.db_h.get_biz_seq_id()
 
         query = """INSERT INTO reviewers (id, user_url, star_raiting, location,
@@ -49,6 +61,8 @@ class YelpScrapyPipeline(object):
         return item
 
     def process_item(self, item, spider):
+        """Exectute query for the correct item type.
+        """
 
         if isinstance(item, BizItem):
             self.save_biz(item)

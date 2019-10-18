@@ -51,12 +51,12 @@ class PgsqlHandler:
 
     def query_to_value(func):
         @functools.wraps(func)
-        def wrapper_decorator(self, *args, **kwargs):
+        def helper(self, *args, **kwargs):
             query = func(self, *args, **kwargs)
             print(query)
             results = self.get_value(query)
             return results
-        return wrapper_decorator
+        return helper
 
     def get_value(self, query):
         self.cursor.execute(query)

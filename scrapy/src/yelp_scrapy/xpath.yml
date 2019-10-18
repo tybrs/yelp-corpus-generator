@@ -19,5 +19,3 @@ reviews:
   raiting: .//div[@class="lemon--div__373c0__1mboc arrange-unit__373c0__1piwO border-color--default__373c0__2oFDT"]/span/div/@aria-label
   reviewer_location: .//span[@class="lemon--span__373c0__3997G text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_ text-weight--bold__373c0__3HYJa text-size--small__373c0__3SGMi"]/text()
   feedback: .//div[@class="lemon--div__373c0__1mboc arrange__373c0__UHqhV vertical-align-middle__373c0__2TQsQ border-color--default__373c0__2oFDT"]//span/text()
-
-

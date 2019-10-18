@@ -9,6 +9,8 @@ services:
   build:
    context: ./
    dockerfile: scrapy.dockerfile
+  volumes:
+    - ./crawls:/usr/src/yelp_scrape/src/crawls
   depends_on:
    - splash
 
