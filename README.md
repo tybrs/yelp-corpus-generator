@@ -44,3 +44,4 @@ Start services and begin scrapping with the following command:
 * Look into adding scrapy `JOBDIR` support.
 * Look into addig a wait function.
 * Tweak scrapy `RANDOMIZE_DOWNLOAD_DELAY`
+* Save date as date time objects

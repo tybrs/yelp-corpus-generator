@@ -4,7 +4,6 @@ from yelp_scrapy.items import UserItem, BizItem
 from re import findall
 from yaml import load, SafeLoader
 from .scrape_utils import print_progress, get_urls
-# from time import sleep
 
 
 class YelpSpider(Spider):
@@ -24,15 +23,21 @@ class YelpSpider(Spider):
     orlando_urls = get_urls('Orlando,+FL')
     lv_urls = get_urls('Las+Vegas,+NV')
 
-    all_urls = (nyc_urls + chi_urls + la_urls +
-                orlando_urls + lv_urls)
+    # start_urls = (nyc_urls + chi_urls + la_urls +
+    #             orlando_urls + lv_urls)
 
-    start_urls = all_urls
+    start_urls = get_urls('Seattle,+WA')
 
-    @print_progress
     def parse(self, response):
         """Root parse function for spider to colllect all urls
-        to be parsed on yelp search results page
+        to be parsed on yelp search results page.
+
+        yeilds:
+            SplashRequest() for all business urls on that page.
+
+        Example page:
+        https://www.yelp.com/search?find_desc=Restaurants&find_loc=
+        New+York,+NY&sortby=review_count&start=0
         """
         bizurls = response.xpath(
             self.xpaths['search_page']['biz_url']).extract()
@@ -41,11 +46,31 @@ class YelpSpider(Spider):
                    if not url.startswith('https://')][2:]
 
         for url in bizurls:
-            # sleep(1)
             yield SplashRequest(url=url, callback=self.parse_biz_page)
 
-    @print_progress
     def parse_biz_page(self, response):
+        """Parse function for Yelp busniess page. This function
+        creates a BizItem with the following keys.
+
+        XPaths are stored in ``biz_page`` key of ``xpaths.yml``.
+
+        itemizes:
+            business_name (str): the name of the business
+            business_city (str): the city of the business
+            business_state (str): the state of the business
+            business_zip (str): the zip code of the business
+            business_url (str): the reponse url
+            business_star_rating (float): the average star raiting
+            of the business
+
+        yeilds:
+            SplashRequest() for all review pages generated from number
+            recorded on page.
+
+
+        Example page:
+        https://www.yelp.com/biz/katzs-delicatessen-new-york?osq=Restaurants
+        """
         num_reviews_str = response.xpath(
             self.xpaths['reviews']['num_reviews_str']).extract_first()
 
@@ -73,9 +98,11 @@ class YelpSpider(Spider):
             self.xpaths['biz_page']['business_star_rating']).extract_first()
         business_star_rating = response.xpath(
             self.xpaths['biz_page']['business_star_rating']).get()
-        business_star_rating = float(findall(
-            r'\d{1,1}\.?\d{0,2}',
-            business_star_rating)[0])
+
+        if business_star_rating:
+            business_star_rating = findall(r'\d{1,1}\.?\d{0,2}',
+                                           business_star_rating)
+            business_star_rating = float(business_star_rating[0])
 
         item = BizItem()
         item['business_name'] = business_name
@@ -91,20 +118,42 @@ class YelpSpider(Spider):
                        for i in reviews_range]
 
         for url in review_urls[:1]:
-            # sleep(1)
             yield SplashRequest(url=url,
                                 meta={'business_city': business_city,
                                       'business_state': business_state},
                                 callback=self.parse_reviews)
 
-    @print_progress
     def parse_reviews(self, response):
+        """ Final parse function for review pages. This function
+        creates a UserItem with the following keys.
+
+        XPaths are stored in ``reviews`` key of ``xpaths.yml``.
+
+
+        itemizes:
+            label (str): label for if the user is loacal or remote
+            to the area of th business
+            user_url (str): the reposne url for the review
+            review_raiting (int): the number of stars the user gives the
+            business
+            reviewer_location (str): city and state of the user
+            review_date (str): the date the review posted
+            feedback (float): number of "Funny" "Useful" and "Cool"
+            votes recieved from community
+
+        yeilds:
+            UserItem()
+
+        Example url:
+        https://www.yelp.com/biz/katzs-delicatessen-new-york?osq=
+        Restaurantssq=Restaurants&start=20
+
+        """
 
         business_city = response.meta['business_city']
         business_state = response.meta['business_state']
         reviews = response.xpath(self.xpaths['reviews']['review_li'])
 
-        # make into function
         for review in reviews:
 
             reviewer_location = review.xpath(
@@ -123,15 +172,11 @@ class YelpSpider(Spider):
                 self.xpaths['reviews']['raiting']).get()
 
             if review_raiting:
-                print('?????review raiting???????')
-                print(review_raiting)
                 review_raiting = findall(r'(\d)',
                                          review_raiting)
 
                 review_raiting = (int(review_raiting[0])
                                   if review_raiting else None)
-                print(review_raiting)
-                print('???????????????????')
 
             review_text = ''.join(review.xpath(
                 self.xpaths['reviews']['review_text']).extract())
