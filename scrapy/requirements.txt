@@ -1,4 +1,4 @@
-scrapy_splash==0.7.2
+scrapy_splash==0.8.0
 Scrapy==1.7.3
 pytest==5.0.1
 psycopg2==2.8.3
